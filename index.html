@@ -211,7 +211,7 @@
             <p class="text-sm text-gray-600"><strong>SINARMAS</strong><br>${item.bank['SINARMAS'] || '-'}</p>
              <p class="text-sm text-gray-600"><strong>WOORI FINANCE</strong><br>${item.bank['WOORI FINANCE'] || '-'}</p>
             <p class="text-blue-700 font-bold mt-2">
-              ${F.formatRupiah(item.harga)} (OTR)
+              ${F.formatRupiah(item.harga) + 5000000} (OTR)
               <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full ${statusBadgeClass}">
                 ${item.status || '-'}
               </span>
@@ -269,7 +269,7 @@
           <h2 class="text-xl font-semibold">${item.nama || '-'}</h2>
           <p class="text-sm text-gray-600">Nopol: ${item.nopol || '-'}</p>
           <p class="text-sm text-gray-600">Bulan: ${item.bulan || '-'}</p>
-          <p class="text-blue-700 font-bold mt-2 text-lg">${F.formatRupiah(item.harga)} (OTR)</p>
+          <p class="text-blue-700 font-bold mt-2 text-lg">${F.formatRupiah(item.harga) + 5000000} (OTR)</p>
         </div>
       </div>
     `;
