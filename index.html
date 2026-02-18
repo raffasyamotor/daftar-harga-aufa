@@ -9,9 +9,9 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-  <!-- LOGIN OVERLAY -->
+ <!-- LOGIN OVERLAY -->
 <div id="loginOverlay" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]">
-  <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-sm relative">
     <h2 class="text-2xl font-bold text-center mb-6">Login Required</h2>
 
     <input id="loginUSERNAME" type="text" placeholder="USERNAME"
@@ -25,12 +25,12 @@
       Login
     </button>
 
-    <p id="loginError" class="text-red-500 text-sm mt-3 text-center hidden">
-      USERNAME atau PASSWORD salah
-    </p>
+    <p id="loginNotif" class="text-sm mt-3 text-center hidden font-semibold"></p>
   </div>
 </div>
 
+
+  <div id="mainContent" class="hidden">
   <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white text-center py-4 shadow">
     <h1 class="text-3xl font-bold tracking-wide">RAFFASYA MOTOR SUBANG</h1>
     <p class="text-sm opacity-80 mt-1">Daftar Harga Mobil Terbaru</p>
@@ -83,23 +83,43 @@
       <div id="modalContent" class="relative"></div>
     </div>
   </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 const loginAPI = "https://script.google.com/macros/s/AKfycbxNptdMyzjdCO0X363N-iws6HNRGZk9BwYBnhlXVJiQZUUaRhj8HRaCtVJT6aJ07Ss/exec";
 
-// Cek apakah sudah login
 window.addEventListener("load", () => {
   if (sessionStorage.getItem("isLoggedIn") === "true") {
-    document.getElementById("loginOverlay").style.display = "none";
+    showMainContent();
   }
 });
+
+function showMainContent() {
+  document.getElementById("loginOverlay").style.display = "none";
+  document.getElementById("mainContent").classList.remove("hidden");
+}
+
+function showNotif(message, type) {
+  const notif = document.getElementById("loginNotif");
+  notif.textContent = message;
+  notif.classList.remove("hidden");
+
+  if (type === "success") {
+    notif.className = "text-green-600 text-sm mt-3 text-center font-semibold";
+  } else {
+    notif.className = "text-red-600 text-sm mt-3 text-center font-semibold";
+  }
+}
 
 async function doLogin() {
   const USERNAME = document.getElementById("loginUSERNAME").value.trim();
   const PASSWORD = document.getElementById("loginPASSWORD").value.trim();
 
-  if (!USERNAME || !PASSWORD) return;
+  if (!USERNAME || !PASSWORD) {
+    showNotif("Harap isi semua field!", "error");
+    return;
+  }
 
   try {
     const res = await fetch(loginAPI + "?action=users");
@@ -112,18 +132,23 @@ async function doLogin() {
     );
 
     if (found) {
-      sessionStorage.setItem("isLoggedIn", "true");
-      document.getElementById("loginOverlay").style.display = "none";
+      showNotif("Login berhasil ✔", "success");
+
+      setTimeout(() => {
+        sessionStorage.setItem("isLoggedIn", "true");
+        showMainContent();
+      }, 1000);
+
     } else {
-      document.getElementById("loginError").classList.remove("hidden");
+      showNotif("USERNAME atau PASSWORD salah ❌", "error");
     }
 
   } catch (err) {
-    document.getElementById("loginError").textContent = "Gagal koneksi ke server";
-    document.getElementById("loginError").classList.remove("hidden");
+    showNotif("Gagal koneksi ke server ❌", "error");
   }
 }
 </script>
+
 
 <script>
   const apiURL = "https://script.google.com/macros/s/AKfycbyr5QyBndUGqeyKgpwRwDDp8g7LnBbvMdpEGadYPWHRtlph9MmwZXgNwP487NtwioZM/exec";
