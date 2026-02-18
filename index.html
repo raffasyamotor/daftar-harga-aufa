@@ -9,6 +9,28 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
+  <!-- LOGIN OVERLAY -->
+<div id="loginOverlay" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+    <h2 class="text-2xl font-bold text-center mb-6">Login Required</h2>
+
+    <input id="loginUsername" type="text" placeholder="Username"
+      class="w-full border rounded px-4 py-2 mb-3 focus:ring focus:ring-blue-200">
+
+    <input id="loginPassword" type="password" placeholder="Password"
+      class="w-full border rounded px-4 py-2 mb-4 focus:ring focus:ring-blue-200">
+
+    <button onclick="doLogin()"
+      class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+      Login
+    </button>
+
+    <p id="loginError" class="text-red-500 text-sm mt-3 text-center hidden">
+      Username atau Password salah
+    </p>
+  </div>
+</div>
+
   <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white text-center py-4 shadow">
     <h1 class="text-3xl font-bold tracking-wide">RAFFASYA MOTOR SUBANG</h1>
     <p class="text-sm opacity-80 mt-1">Daftar Harga Mobil Terbaru</p>
@@ -63,6 +85,45 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+const loginAPI = "https://script.google.com/macros/s/AKfycbxNptdMyzjdCO0X363N-iws6HNRGZk9BwYBnhlXVJiQZUUaRhj8HRaCtVJT6aJ07Ss/exec";
+
+// Cek apakah sudah login
+window.addEventListener("load", () => {
+  if (sessionStorage.getItem("isLoggedIn") === "true") {
+    document.getElementById("loginOverlay").style.display = "none";
+  }
+});
+
+async function doLogin() {
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+
+  if (!username || !password) return;
+
+  try {
+    const res = await fetch(loginAPI + "?action=users");
+    const json = await res.json();
+    const users = Array.isArray(json) ? json : (json.data || []);
+
+    const found = users.find(u =>
+      String(u.username).trim() === username &&
+      String(u.password).trim() === password
+    );
+
+    if (found) {
+      sessionStorage.setItem("isLoggedIn", "true");
+      document.getElementById("loginOverlay").style.display = "none";
+    } else {
+      document.getElementById("loginError").classList.remove("hidden");
+    }
+
+  } catch (err) {
+    document.getElementById("loginError").textContent = "Gagal koneksi ke server";
+    document.getElementById("loginError").classList.remove("hidden");
+  }
+}
+</script>
 
 <script>
   const apiURL = "https://script.google.com/macros/s/AKfycbyr5QyBndUGqeyKgpwRwDDp8g7LnBbvMdpEGadYPWHRtlph9MmwZXgNwP487NtwioZM/exec";
