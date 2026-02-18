@@ -14,10 +14,10 @@
   <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
     <h2 class="text-2xl font-bold text-center mb-6">Login Required</h2>
 
-    <input id="loginUsername" type="text" placeholder="Username"
+    <input id="loginUSERNAME" type="text" placeholder="USERNAME"
       class="w-full border rounded px-4 py-2 mb-3 focus:ring focus:ring-blue-200">
 
-    <input id="loginPassword" type="password" placeholder="Password"
+    <input id="loginPASSWORD" type="PASSWORD" placeholder="PASSWORD"
       class="w-full border rounded px-4 py-2 mb-4 focus:ring focus:ring-blue-200">
 
     <button onclick="doLogin()"
@@ -26,7 +26,7 @@
     </button>
 
     <p id="loginError" class="text-red-500 text-sm mt-3 text-center hidden">
-      Username atau Password salah
+      USERNAME atau PASSWORD salah
     </p>
   </div>
 </div>
@@ -96,10 +96,10 @@ window.addEventListener("load", () => {
 });
 
 async function doLogin() {
-  const username = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
+  const USERNAME = document.getElementById("loginUSERNAME").value.trim();
+  const PASSWORD = document.getElementById("loginPASSWORD").value.trim();
 
-  if (!username || !password) return;
+  if (!USERNAME || !PASSWORD) return;
 
   try {
     const res = await fetch(loginAPI + "?action=users");
@@ -107,8 +107,8 @@ async function doLogin() {
     const users = Array.isArray(json) ? json : (json.data || []);
 
     const found = users.find(u =>
-      String(u.username).trim() === username &&
-      String(u.password).trim() === password
+      String(u.USERNAME).trim() === USERNAME &&
+      String(u.PASSWORD).trim() === PASSWORD
     );
 
     if (found) {
